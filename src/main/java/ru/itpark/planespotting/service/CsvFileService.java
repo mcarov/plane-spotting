@@ -5,13 +5,15 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ResourceUtils;
 import ru.itpark.planespotting.entity.*;
 
 
 import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -19,14 +21,15 @@ import java.util.List;
 
 @Service
 public class CsvFileService {
-    private final File photosFile;
+    private final Path path;
 
-    public CsvFileService() throws FileNotFoundException {
-        photosFile = ResourceUtils.getFile("classpath:planes-mod.csv");
+    public CsvFileService(@Value("${path.resources}") String uploadPath){
+        path = Paths.get(new File(uploadPath).getAbsolutePath())
+                .resolve("planes-mod.csv");
     }
 
     public List<PhotoEntity> importFromCsvFile() throws IOException, ParseException {
-        try(Reader reader = Files.newBufferedReader(photosFile.toPath());
+        try(Reader reader = Files.newBufferedReader(path);
             CSVParser parser = new CSVParser(reader, CSVFormat.DEFAULT
                     .withFirstRecordAsHeader()
                     .withIgnoreHeaderCase()
