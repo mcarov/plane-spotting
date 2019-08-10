@@ -1,6 +1,7 @@
 package ru.itpark.planespotting.config;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -11,6 +12,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -34,14 +36,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .and()
             .addFilterAfter(authTokenFilter, BasicAuthenticationFilter.class)
             .authorizeRequests()
-            .antMatchers("/api/photos/**").anonymous()
-            .antMatchers("/api/planes/**").anonymous()
-            .antMatchers("/api/airlines/**").anonymous()
-            .antMatchers("/api/airports/**").anonymous()
+            .antMatchers("/api/photos/**").permitAll()
+            .antMatchers("/api/planes/**").permitAll()
+            .antMatchers("/api/airlines/**").permitAll()
+            .antMatchers("/api/airports/**").permitAll()
+            .antMatchers("/api/search/photos*").permitAll()
+            .antMatchers("/api/images/*").permitAll()
             .antMatchers("/api/auth").anonymous()
             .antMatchers("/api/register").anonymous()
-            .antMatchers("/api/search/photos*").anonymous()
-            .antMatchers("/api/images/*").anonymous()
             .antMatchers("/api/**").hasRole("USER")
         ;
     }
@@ -67,5 +69,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         resolver.setMaxUploadSize(20971520);
 
         return resolver;
+    }
+
+    @Bean
+    public LocalValidatorFactoryBean localValidatorFactoryBean(MessageSource messageSource) {
+        LocalValidatorFactoryBean validator = new LocalValidatorFactoryBean();
+        validator.setValidationMessageSource(messageSource);
+        return validator;
     }
 }

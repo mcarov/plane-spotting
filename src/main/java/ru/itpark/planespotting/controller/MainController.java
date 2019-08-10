@@ -7,6 +7,7 @@ import ru.itpark.planespotting.dto.*;
 import ru.itpark.planespotting.model.SavingModel;
 import ru.itpark.planespotting.service.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @CrossOrigin

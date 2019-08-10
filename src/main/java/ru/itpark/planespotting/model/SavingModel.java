@@ -3,6 +3,7 @@ package ru.itpark.planespotting.model;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.itpark.planespotting.dto.*;
+import ru.itpark.planespotting.validation.AirportCode;
 
 @Data
 @NoArgsConstructor
@@ -11,7 +12,9 @@ public class SavingModel {
     private String photographer;
     private String date;
     private String airport;
+    @AirportCode(type = AirportCode.Type.IATA)
     private String iata_code;
+    @AirportCode(type = AirportCode.Type.ICAO)
     private String icao_code;
     private String country;
     private String plane;

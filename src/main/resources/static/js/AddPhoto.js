@@ -132,7 +132,7 @@ export function createEditPanel() {
 
     const iataCodeLabel = document.createElement('label');
     iataCodeLabel.for = 'iata_code';
-    iataCodeLabel.innerText = 'IATA code';
+    iataCodeLabel.innerText = 'IATA code (3 letters)';
 
     const iataCodeField = document.createElement('input');
     iataCodeField.className = 'form-control';
@@ -148,7 +148,7 @@ export function createEditPanel() {
 
     const icaoCodeLabel = document.createElement('label');
     icaoCodeLabel.for = 'icao_code';
-    icaoCodeLabel.innerText = 'ICAO code';
+    icaoCodeLabel.innerText = 'ICAO code (4 letters)';
 
     const icaoCodeField = document.createElement('input');
     icaoCodeField.className = 'form-control';

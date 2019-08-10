@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.time.ZonedDateTime;
 
 @RestController
+@RequestMapping("${server.error.path:${error.path:/error}}")
 public class ErrorController extends AbstractErrorController {
     private ErrorAttributes errorAttributes;
     private MessageSource messageSource;
