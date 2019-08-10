@@ -1,7 +1,7 @@
 import {getPhoto} from "./Photo.js";
 import {createNavbar} from "./Navbar.js";
 
-export const appUrl = 'http://127.0.0.1:8080';
+export const appUrl = 'https://plane-spotting.herokuapp.com';
 export const photosUrl = appUrl.concat('/api/photos');
 export const imagesUrl = appUrl.concat('/api/images');
 
