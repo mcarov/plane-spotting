@@ -47,10 +47,14 @@ export async function save() {
             body: formData
         });
         const data = await reply.json();
+
+        console.log(reply.status);
         console.log(data);
 
-        deactivateNavbarLinks();
-        createPhotoPanel(data);
+        if(reply.status === 200) {
+            deactivateNavbarLinks();
+            createPhotoPanel(data);
+        }
     }
     catch (e) {
         console.error(e);

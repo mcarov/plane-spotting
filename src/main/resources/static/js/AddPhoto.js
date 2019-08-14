@@ -19,7 +19,7 @@ export function createEditPanel() {
     row.className = 'row justify-content-end';
 
     const text = document.createElement('p');
-    text.innerText = '* - required fields';
+    text.innerText = '* required fields';
     row.appendChild(text);
     col.appendChild(row);
 

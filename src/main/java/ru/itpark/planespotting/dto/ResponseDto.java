@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.ZonedDateTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -14,4 +15,5 @@ public class ResponseDto {
     private String reason;
     private String message;
     private ZonedDateTime timestamp;
+    private List<FieldDto> fields;
 }

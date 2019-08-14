@@ -67,7 +67,7 @@ public class MainController {
     }
 
     @PostMapping(value = "/save")
-    public PhotoDto savePhoto(@RequestParam MultipartFile file, @ModelAttribute SavingModel model){
+    public PhotoDto savePhoto(@RequestParam MultipartFile file, @Valid @ModelAttribute SavingModel model) {
         long id = 0;
         if(!file.isEmpty()) {
             String filename = imageService.writeImage(file);

@@ -4,11 +4,15 @@ import org.springframework.boot.autoconfigure.web.servlet.error.AbstractErrorCon
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.validation.BindException;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.ServletWebRequest;
+import ru.itpark.planespotting.dto.FieldDto;
 import ru.itpark.planespotting.dto.ResponseDto;
 import ru.itpark.planespotting.exception.AuthTokenException;
 import ru.itpark.planespotting.exception.FileUploadException;
@@ -17,6 +21,9 @@ import ru.itpark.planespotting.exception.PhotoNotFoundException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.ZonedDateTime;
+import java.util.List;
+import java.util.Locale;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("${server.error.path:${error.path:/error}}")
@@ -34,39 +41,56 @@ public class ErrorController extends AbstractErrorController {
     public ResponseEntity<ResponseDto> handleError(HttpServletRequest request) {
         ServletWebRequest webRequest = new ServletWebRequest(request);
         Throwable error = errorAttributes.getError(webRequest);
+        Locale locale = LocaleContextHolder.getLocale();
 
-        int code = getStatus(request).value();
+        int status = getStatus(request).value();
         String reason = getStatus(request).getReasonPhrase();
-        String message = messageSource.getMessage("api.error.default", null, LocaleContextHolder.getLocale());
+        String message = messageSource.getMessage("api.error.default", null, locale);
+        List<FieldDto> fields = null;
 
         if(error instanceof PhotoNotFoundException) {
-            code = 404;
-            reason = "Not found";
+            status = HttpStatus.NOT_FOUND.value();
+            reason = HttpStatus.NOT_FOUND.getReasonPhrase();
             message = messageSource.getMessage("api.error.no-photo", null, LocaleContextHolder.getLocale());
         }
         else if(error instanceof UsernameNotFoundException | error instanceof BadCredentialsException) {
-            code = 401;
-            reason = "Unauthorized";
-            message = messageSource.getMessage("api.error.login-pass", null, LocaleContextHolder.getLocale());
+            status = HttpStatus.UNAUTHORIZED.value();
+            reason = HttpStatus.UNAUTHORIZED.getReasonPhrase();
+            message = messageSource.getMessage("api.error.login-pass", null, locale);
         }
         else if(error instanceof AuthTokenException) {
-            code = 401;
-            reason = "Unauthorized";
-            message = messageSource.getMessage(error.getMessage(), null, LocaleContextHolder.getLocale());
+            status = HttpStatus.UNAUTHORIZED.value();
+            reason = HttpStatus.UNAUTHORIZED.getReasonPhrase();
+            message = messageSource.getMessage(error.getMessage(), null, locale);
         }
         else if(error instanceof ImageNotFoundException) {
-            code = 404;
-            reason = "Not found";
-            message = messageSource.getMessage("api.error.no-image", null, LocaleContextHolder.getLocale());
+            status = HttpStatus.NOT_FOUND.value();
+            reason = HttpStatus.NOT_FOUND.getReasonPhrase();
+            message = messageSource.getMessage("api.error.no-image", null, locale);
         }
         else if(error instanceof FileUploadException) {
-            code = 500;
-            reason = "Internal server error";
-            message = messageSource.getMessage("api.error.upload", null, LocaleContextHolder.getLocale());
+            status = HttpStatus.INTERNAL_SERVER_ERROR.value();
+            reason = HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase();
+            message = messageSource.getMessage("api.error.upload", null, locale);
+        }
+        else if(error instanceof BindException) {
+            BindingResult bindingResutlt =  ((BindException) error).getBindingResult();
+            status = HttpStatus.BAD_REQUEST.value();
+            reason = HttpStatus.BAD_REQUEST.getReasonPhrase();
+            message = messageSource.getMessage("api.error.binding", null, locale);
+            fields = bindingResutlt.getFieldErrors().stream()
+                    .map(e -> new FieldDto(e.getField(), e.getDefaultMessage()))
+                    .collect(Collectors.toList());
         }
 
-        return ResponseEntity.status(code).body(
-                new ResponseDto(code, reason, message, ZonedDateTime.now()));
+        ResponseDto responseDto = new ResponseDto();
+        responseDto.setStatus(status);
+        responseDto.setReason(reason);
+        responseDto.setMessage(message);
+        responseDto.setTimestamp(ZonedDateTime.now());
+        responseDto.setFields(fields);
+
+        return ResponseEntity.status(status).body(responseDto);
     }
 
 

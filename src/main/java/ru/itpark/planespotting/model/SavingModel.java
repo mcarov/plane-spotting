@@ -12,9 +12,9 @@ public class SavingModel {
     private String photographer;
     private String date;
     private String airport;
-    @AirportCode(type = AirportCode.Type.IATA)
+    @AirportCode(type = AirportCode.Type.IATA, message = "{api.validation.iata-code}")
     private String iata_code;
-    @AirportCode(type = AirportCode.Type.ICAO)
+    @AirportCode(type = AirportCode.Type.ICAO, message = "{api.validation.icao-code}")
     private String icao_code;
     private String country;
     private String plane;

@@ -13,13 +13,13 @@ public class AirportCodeValidator implements ConstraintValidator<AirportCode, St
     }
 
     @Override
-    public boolean isValid(String iataCode, ConstraintValidatorContext context) {
-        if(iataCode == null || iataCode.equals("")) {
+    public boolean isValid(String code, ConstraintValidatorContext context) {
+        if(code == null || code.equals("")) {
             return true;
         }
-        if(!StringUtils.isAlpha(iataCode))
+        if(!StringUtils.isAlpha(code))
             return false;
 
-        return iataCode.length() == size;
+        return code.length() == size;
     }
 }

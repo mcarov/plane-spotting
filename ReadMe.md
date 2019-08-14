@@ -7,6 +7,7 @@
 1. Boot
 2. Web MVC
 3. Security
-4. JPA
+4. Data (JPA)
+5. Validation
 
 https://plane-spotting.herokuapp.com
