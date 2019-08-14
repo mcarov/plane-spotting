@@ -48,7 +48,6 @@ export async function save() {
         });
         const data = await reply.json();
 
-        console.log(reply.status);
         console.log(data);
 
         if(reply.status === 200) {
