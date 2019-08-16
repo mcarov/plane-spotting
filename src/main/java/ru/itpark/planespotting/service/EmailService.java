@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class EmailService {
-    private final JavaMailSender mailSender;
+    //private final JavaMailSender mailSender;
 
     public void sendSimpleMessage(String from, String to, String subject, String content) {
         SimpleMailMessage message = new SimpleMailMessage();
@@ -17,6 +17,6 @@ public class EmailService {
         message.setSubject(subject);
         message.setText(content);
 
-        mailSender.send(message);
+        //mailSender.send(message);
     }
 }
