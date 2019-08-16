@@ -22,7 +22,7 @@ public class TokenService implements AuthenticationManager {
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String token = (String)authentication.getPrincipal();
 
-        AuthTokenEntity authTokenEntity = authTokenRepository.findById(token).orElseThrow(() -> new AuthTokenException("api.error.token-invalid"));
+        AuthTokenEntity authTokenEntity = authTokenRepository.findById(token).orElseThrow(() -> new AuthTokenException("api.error.auth-token"));
         UserEntity user = authTokenEntity.getUser();
 
         return new UsernamePasswordAuthenticationToken(

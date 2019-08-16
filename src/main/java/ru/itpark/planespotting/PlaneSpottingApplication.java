@@ -30,8 +30,8 @@ public class PlaneSpottingApplication {
             UserEntity user = new UserEntity();
             user.setId(1);
             user.setUsername("mcarov");
-            user.setPassword(encoder.encode("psw_85"));
             user.setEmail("mcarov@localhost.ru");
+            user.setPassword(encoder.encode("psw_85"));
             user.setCountry("Russian Federation");
             user.setAuthorities(List.of(new SimpleGrantedAuthority("ROLE_USER"),
                                         new SimpleGrantedAuthority("ROLE_ADMIN")));
@@ -39,8 +39,8 @@ public class PlaneSpottingApplication {
             user.setAccountNonLocked(true);
             user.setCredentialsNonExpired(true);
             user.setEnabled(true);
-
             userRepository.save(user);
+
             List<PhotoEntity> entities = service.importFromCsvFile();
             entities.forEach(e -> {
                 e.setUser(user);

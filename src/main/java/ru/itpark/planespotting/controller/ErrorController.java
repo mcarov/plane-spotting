@@ -7,6 +7,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
@@ -14,10 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.ServletWebRequest;
 import ru.itpark.planespotting.dto.FieldDto;
 import ru.itpark.planespotting.dto.ResponseDto;
-import ru.itpark.planespotting.exception.AuthTokenException;
-import ru.itpark.planespotting.exception.FileUploadException;
-import ru.itpark.planespotting.exception.ImageNotFoundException;
-import ru.itpark.planespotting.exception.PhotoNotFoundException;
+import ru.itpark.planespotting.exception.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.ZonedDateTime;
@@ -81,6 +79,23 @@ public class ErrorController extends AbstractErrorController {
             fields = bindingResutlt.getFieldErrors().stream()
                     .map(e -> new FieldDto(e.getField(), e.getDefaultMessage()))
                     .collect(Collectors.toList());
+        }
+        else if(error instanceof UsernameAlreadyExistsException) {
+            status = HttpStatus.FORBIDDEN.value();
+            reason = HttpStatus.FORBIDDEN.getReasonPhrase();
+            message = String.join("",
+                    messageSource.getMessage("api.error.username-exists", null, locale),
+                    " (", error.getMessage(), ")");
+        }
+        else if(error instanceof TooManyRegisterAttemptsException) {
+            status = HttpStatus.FORBIDDEN.value();
+            reason = HttpStatus.FORBIDDEN.getReasonPhrase();
+            message = messageSource.getMessage(error.getMessage(), null, locale);
+        }
+        else if(error instanceof DisabledException) {
+            status = HttpStatus.UNAUTHORIZED.value();
+            reason = HttpStatus.UNAUTHORIZED.getReasonPhrase();
+            message = messageSource.getMessage(error.getMessage(), null, locale);
         }
 
         ResponseDto responseDto = new ResponseDto();
