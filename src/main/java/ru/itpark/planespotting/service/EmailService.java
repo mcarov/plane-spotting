@@ -1,22 +1,36 @@
 package ru.itpark.planespotting.service;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.mail.SimpleMailMessage;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+
 @Service
-@RequiredArgsConstructor
 public class EmailService {
-    //private final JavaMailSender mailSender;
+    private final JavaMailSender mailSender;
+    private final String from;
 
-    public void sendSimpleMessage(String from, String to, String subject, String content) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom(from);
-        message.setTo(to);
-        message.setSubject(subject);
-        message.setText(content);
+    public EmailService(JavaMailSender mailSender, @Value("${spring.mail.username}") String from) {
+        this.mailSender = mailSender;
+        this.from = from;
+    }
 
-        //mailSender.send(message);
+    public void sendMimeMessage(String to, String subject, String content) {
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message);
+            helper.setFrom(from);
+            helper.setTo(to);
+            helper.setSubject(subject);
+            helper.setText(content, true);
+
+            mailSender.send(message);
+        }
+        catch(MessagingException e) {
+            e.printStackTrace();
+        }
     }
 }

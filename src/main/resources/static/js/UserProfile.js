@@ -3,10 +3,10 @@ import {appUrl} from "./App.js";
 export async function getUserProfile() {
     try {
         const auth_data = JSON.parse(localStorage.getItem('auth_data'));
-        const reply = await fetch(appUrl.concat('/api/users/my-profile'), {
+        const response = await fetch(appUrl.concat('/api/users/my-profile'), {
             headers: {'X-Token': auth_data.token}
         });
-        const data = await reply.json();
+        const data = await response.json();
         console.log(data);
 
         createUserPanel(data);

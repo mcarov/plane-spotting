@@ -95,8 +95,8 @@ export function createPhotoPanel(data) {
 
 export async function getPhoto(id) {
     try {
-        const reply = await fetch(photosUrl.concat(`/${id}`));
-        const data = await reply.json();
+        const response = await fetch(photosUrl.concat(`/${id}`));
+        const data = await response.json();
         console.log(data);
 
         deactivateNavbarLinks();

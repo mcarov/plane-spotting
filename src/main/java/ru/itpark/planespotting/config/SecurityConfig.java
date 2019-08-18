@@ -44,6 +44,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers("/api/images/*").permitAll()
             .antMatchers("/api/auth").anonymous()
             .antMatchers("/api/register").anonymous()
+            .antMatchers("/api/register/confirm").anonymous()
             .antMatchers("/api/**").hasRole("USER")
             .anyRequest().permitAll()
         ;

@@ -2,8 +2,8 @@ POST http://localhost:8080/api/auth
 Content-Type: application/json
 
 {
-  "username": "mcarov",
-  "password": "psw_85"
+  "username": "",
+  "password": ""
 }
 
 > {%
@@ -12,6 +12,17 @@ client.test("Request executed successfully", function() {
     client.global.set("auth_token", response.body.token)
 });
 %}
+
+###
+
+POST http://localhost:8080/api/register
+Content-Type: application/json
+
+{
+  "username": "",
+  "email": "",
+  "password": ""
+}
 
 ###
 

@@ -1,5 +1,6 @@
 import {getPhoto} from "./Photo.js";
 import {createNavbar} from "./Navbar.js";
+import {confirm} from "./RegHolder.js";
 
 export const appUrl = 'https://plane-spotting.herokuapp.com';
 export const photosUrl = appUrl.concat('/api/photos');
@@ -9,8 +10,8 @@ export const root = document.getElementById('root');
 
 export async function getPhotos() {
     try {
-        const reply = await fetch(photosUrl);
-        const data = await reply.json();
+        const response = await fetch(photosUrl);
+        const data = await response.json();
         console.log(data);
 
         createCards(data);
@@ -77,5 +78,15 @@ export async function createCards(array) {
     }
 }
 
-createNavbar();
-getPhotos();
+window.addEventListener('load', function(event) {
+    event.preventDefault();
+
+    const params = new URLSearchParams(window.location.search);
+    if(params.has('token')) {
+        confirm(params.get('token'));
+        console.log('token recived');
+    }
+
+    createNavbar();
+    getPhotos();
+});

@@ -6,6 +6,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.MailSendException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -96,6 +97,11 @@ public class ErrorController extends AbstractErrorController {
             status = HttpStatus.UNAUTHORIZED.value();
             reason = HttpStatus.UNAUTHORIZED.getReasonPhrase();
             message = messageSource.getMessage(error.getMessage(), null, locale);
+        }
+        else if(error instanceof MailSendException) {
+            status = HttpStatus.SERVICE_UNAVAILABLE.value();
+            reason = HttpStatus.SERVICE_UNAVAILABLE.getReasonPhrase();
+            message = messageSource.getMessage("api.error.send-failed", null, locale);
         }
 
         ResponseDto responseDto = new ResponseDto();

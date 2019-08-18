@@ -1,6 +1,6 @@
 package ru.itpark.planespotting.service;
 
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -11,7 +11,6 @@ import ru.itpark.planespotting.entity.UserEntity;
 import ru.itpark.planespotting.exception.RegTokenException;
 import ru.itpark.planespotting.exception.TooManyRegisterAttemptsException;
 import ru.itpark.planespotting.exception.UsernameAlreadyExistsException;
-import ru.itpark.planespotting.repository.AuthTokenRepository;
 import ru.itpark.planespotting.repository.RegTokenRepository;
 import ru.itpark.planespotting.repository.UserRepository;
 
@@ -21,13 +20,25 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
-@RequiredArgsConstructor
 public class RegService {
     private final UserRepository userRepository;
     private final RegTokenRepository regTokenRepository;
-    private final AuthTokenRepository authTokenRepository;
-    private final PasswordEncoder encoder;
     private final EmailService emailService;
+    private final PasswordEncoder encoder;
+    private final String appUrl;
+
+    public RegService(UserRepository userRepository,
+                      RegTokenRepository regTokenRepository,
+                      PasswordEncoder encoder,
+                      EmailService emailService,
+                      @Value("${app.url}") String appUrl) {
+
+        this.userRepository = userRepository;
+        this.regTokenRepository = regTokenRepository;
+        this.emailService = emailService;
+        this.encoder = encoder;
+        this.appUrl = appUrl;
+    }
 
     public void register(RegRequestDto dto) {
         Optional<UserEntity> user = userRepository.findByUsername(dto.getUsername());
@@ -42,7 +53,6 @@ public class RegService {
             newUser.setAccountNonLocked(true);
             newUser.setCredentialsNonExpired(true);
             newUser.setEnabled(false);
-            userRepository.save(newUser);
 
             RegTokenEntity regToken = new RegTokenEntity();
             regToken.setToken(UUID.randomUUID().toString());
@@ -50,7 +60,13 @@ public class RegService {
             regToken.setCreated(LocalDateTime.now());
             regTokenRepository.save(regToken);
 
-            String registerLink = regToken.getToken();
+            String regLink = String.join("",
+                    "<a href='", appUrl, "/api/register/confirm?token=",
+                    regToken.getToken(), "'>Confirm registration</a>");
+            emailService.sendMimeMessage(
+                    newUser.getEmail(),
+                    "Registration on Plane spotting",
+                    regLink);
         }
         else {
             if(user.get().isEnabled()) {
@@ -71,9 +87,9 @@ public class RegService {
     }
 
     public void confirm(RegConfirmRequestDto dto) {
-        RegTokenEntity token = regTokenRepository.findById(dto.getToken()).orElseThrow(() -> new RegTokenException("api.error.reg-token"));
-        UserEntity user = token.getUser();
+        RegTokenEntity regToken = regTokenRepository.findById(dto.getToken()).orElseThrow(() -> new RegTokenException("api.error.reg-token"));
+        UserEntity user = regToken.getUser();
         user.setEnabled(true);
-        regTokenRepository.delete(token);
+        regTokenRepository.delete(regToken);
     }
 }

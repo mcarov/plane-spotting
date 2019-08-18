@@ -1,4 +1,5 @@
 import {deactivateNavbarLinks} from "./Navbar.js";
+import {register} from "./RegHolder.js";
 
 export function createRegistrationPanel() {
     while(root.childElementCount > 0) {
@@ -110,7 +111,7 @@ export function createRegistrationPanel() {
     signUpButton.className = 'btn btn-outline-light btn-block mt-4';
     signUpButton.innerText = 'Sign up';
     signUpButton.addEventListener('click', function () {
-
+        register();
     });
 
     card.appendChild(signUpButton);

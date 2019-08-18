@@ -3,8 +3,8 @@ import {deactivateNavbarLinks} from "./Navbar.js";
 
 export async function getPlanes() {
     try {
-        const reply = await fetch(appUrl.concat('/api/planes'));
-        const data = await reply.json();
+        const response = await fetch(appUrl.concat('/api/planes'));
+        const data = await response.json();
         console.log(data);
 
         createTable(data);
@@ -16,8 +16,8 @@ export async function getPlanes() {
 
 async function getPhotosByPlaneName(name) {
     try {
-        const reply = await fetch(appUrl.concat(`/api/planes/${name}`));
-        const data = await reply.json();
+        const response = await fetch(appUrl.concat(`/api/planes/${name}`));
+        const data = await response.json();
         console.log(data);
 
         createCards(data);

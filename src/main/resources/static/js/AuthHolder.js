@@ -6,17 +6,17 @@ export async function authenticate() {
         const usernameField = document.getElementById('username');
         const passwordField = document.getElementById('password');
 
-        const reply = await fetch(appUrl.concat('/api/auth'), {
+        const response = await fetch(appUrl.concat('/api/auth'), {
             method: 'post',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
-                'username': `${usernameField.value}`,
-                'password': `${passwordField.value}`
+                'username': usernameField.value,
+                'password': passwordField.value
             })
         });
-        const data = await reply.json();
+        const data = await response.json();
 
-        if(reply.status === 200) {
+        if(response.status === 200) {
             localStorage.setItem('auth_data', JSON.stringify({
                 'token': data.token,
                 'username': data.username,
@@ -25,6 +25,9 @@ export async function authenticate() {
 
             createNavbarForUser();
             getPhotos();
+        }
+        else {
+            console.log(data);
         }
 
         usernameField.value = '';

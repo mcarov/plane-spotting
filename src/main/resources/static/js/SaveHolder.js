@@ -41,16 +41,16 @@ export async function save() {
         formData.append('airline', airlineField.value);
         formData.append('username', auth_data.username);
 
-        const reply = await fetch(appUrl.concat('/api/save'), {
+        const response = await fetch(appUrl.concat('/api/save'), {
             method: 'post',
             headers: {'X-Token': auth_data.token},
             body: formData
         });
-        const data = await reply.json();
+        const data = await response.json();
 
         console.log(data);
 
-        if(reply.status === 200) {
+        if(response.status === 200) {
             deactivateNavbarLinks();
             createPhotoPanel(data);
         }

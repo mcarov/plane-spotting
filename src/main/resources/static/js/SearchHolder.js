@@ -3,8 +3,8 @@ import {deactivateNavbarLinks} from "./Navbar.js";
 
 export async function searchForPhotos(query) {
     try {
-        const reply = await fetch(appUrl.concat(`/api/search/photos?q=${query}`));
-        const data = await reply.json();
+        const response = await fetch(appUrl.concat(`/api/search/photos?q=${query}`));
+        const data = await response.json();
         console.log(data);
         deactivateNavbarLinks();
         createCards(data);
