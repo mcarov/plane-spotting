@@ -78,15 +78,11 @@ export async function createCards(array) {
     }
 }
 
-window.addEventListener('load', function(event) {
-    event.preventDefault();
+const params = new URLSearchParams(window.location.search);
+if(params.has('token')) {
+    confirm(params.get('token'));
+    console.log('token recived');
+}
 
-    const params = new URLSearchParams(window.location.search);
-    if(params.has('token')) {
-        confirm(params.get('token'));
-        console.log('token recived');
-    }
-
-    createNavbar();
-    getPhotos();
-});
+createNavbar();
+getPhotos();

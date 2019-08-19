@@ -73,7 +73,7 @@ public class ErrorController extends AbstractErrorController {
             message = messageSource.getMessage("api.error.upload", null, locale);
         }
         else if(error instanceof BindException) {
-            BindingResult bindingResutlt =  ((BindException) error).getBindingResult();
+            BindingResult bindingResutlt = ((BindException) error).getBindingResult();
             status = HttpStatus.BAD_REQUEST.value();
             reason = HttpStatus.BAD_REQUEST.getReasonPhrase();
             message = messageSource.getMessage("api.error.binding", null, locale);
@@ -98,7 +98,7 @@ public class ErrorController extends AbstractErrorController {
             reason = HttpStatus.UNAUTHORIZED.getReasonPhrase();
             message = messageSource.getMessage(error.getMessage(), null, locale);
         }
-        else if(error instanceof MailSendException) {
+        else if(error instanceof EmailNotSentException) {
             status = HttpStatus.SERVICE_UNAVAILABLE.value();
             reason = HttpStatus.SERVICE_UNAVAILABLE.getReasonPhrase();
             message = messageSource.getMessage("api.error.send-failed", null, locale);
@@ -113,7 +113,6 @@ public class ErrorController extends AbstractErrorController {
 
         return ResponseEntity.status(status).body(responseDto);
     }
-
 
     @Override
     public String getErrorPath() {

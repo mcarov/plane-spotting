@@ -1,4 +1,4 @@
-import {getPhotos} from './App.js';
+import {appUrl, getPhotos} from './App.js';
 import {createLoginPanel} from "./Login.js";
 import {searchForPhotos} from "./SearchHolder.js";
 import {getAirlines} from "./Airlines.js";
@@ -118,7 +118,7 @@ function initNavbarElements() {
     addPhotoLink.href ="#";
     addPhotoLink.innerText = 'Add photo';
     addPhotoLink.addEventListener('click', function (event) {
-       event.preventDefault();
+        event.preventDefault();
         this.parentElement.className = 'nav-item active';
         photosLink.parentElement.className = 'nav-item';
         planesLink.parentElement.className = 'nav-item';
@@ -171,22 +171,43 @@ function initNavbarElements() {
     });
 }
 
-export function createNavbar() {
+export async function createNavbar() {
     while(navbar.childElementCount > 2) {
         navbar.removeChild(navbar.lastChild);
     }
+
     if(localStorage.getItem('auth_data') !== null) {
         const auth_data = JSON.parse(localStorage.getItem('auth_data'));
+        const response = await fetch(appUrl.concat('/api/users/my-profile'), {
+            headers: {'X-Token': auth_data.token}
+        });
 
-        ul_1.appendChild(li_1);
-        ul_1.appendChild(li_2);
-        ul_1.appendChild(li_3);
-        ul_1.appendChild(li_4);
-        ul_1.appendChild(li_5);
+        if(response.status === 200) {
+            console.log("auth token verified");
 
-        userLink.innerText = auth_data.username;
-        navbar.appendChild(ul_2);
-        navbar.appendChild(logoutButton);
+            ul_1.appendChild(li_1);
+            ul_1.appendChild(li_2);
+            ul_1.appendChild(li_3);
+            ul_1.appendChild(li_4);
+            ul_1.appendChild(li_5);
+
+            userLink.innerText = auth_data.username;
+            navbar.appendChild(ul_2);
+            navbar.appendChild(logoutButton);
+        }
+        else {
+            const data = await response.json();
+            console.log(data);
+            localStorage.removeItem('auth_data');
+
+            ul_1.appendChild(li_1);
+            ul_1.appendChild(li_2);
+            ul_1.appendChild(li_3);
+            ul_1.appendChild(li_4);
+
+            navbar.appendChild(loginFormButton);
+            navbar.appendChild(signUpFormButton);
+        }
     }
     else {
         ul_1.appendChild(li_1);

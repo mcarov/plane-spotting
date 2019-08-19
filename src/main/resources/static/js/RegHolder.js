@@ -19,13 +19,13 @@ export async function register() {
                     'password': passwordRegField.value
                 })
             });
-            console.log(response);
             if(response.status === 201) {
                 getPhotos();
                 console.log('account created');
             }
             else {
-                console.log('account creation failed');
+                const data = await response.json();
+                console.log(data);
             }
 
         }
