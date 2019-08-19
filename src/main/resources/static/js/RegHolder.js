@@ -19,6 +19,7 @@ export async function register() {
                     'password': passwordRegField.value
                 })
             });
+            console.log(response);
             if(response.status === 201) {
                 getPhotos();
                 console.log('account created');
